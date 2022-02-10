@@ -1,5 +1,7 @@
 package br.com.solinftec.treinamentospringboot.model;
 
+import java.sql.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,27 +14,31 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "EQUIPAMENTO")
 @Data
 @NoArgsConstructor
-public class Equipamento {
+@Table(name = "ORDEM_SERVICO")
+public class OrdemServico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
+    @Column(name = "DATA_EXECUCAO")
+    private Date data_execucao;
+
     @OneToOne
-    private TipoEquipamento id_tipo_equipamento;
+    private Cooperativa id_cooperativa;
 
-    @Column(name = "DESCRICAO")
-    private String descricao;
+    @OneToOne
+    private Fazenda id_fazenda;
 
-    @Column(name = "LATITUDE")
-    private Float latitude;
+    @OneToOne
+    private Equipamento id_equipamento;
 
-    @Column(name = "LONGITUDE")
-    private Float longitude;
+    @OneToOne
+    private TipoServico id_Tipo_Servico;
 
-    @Column(name = "ATIVO")
-    private Boolean ativo;
+    @OneToOne
+    private Produto id_produto;
 }

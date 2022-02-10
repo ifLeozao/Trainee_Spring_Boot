@@ -1,11 +1,15 @@
 package br.com.solinftec.treinamentospringboot.service;
 
+import br.com.solinftec.treinamentospringboot.dto.cooperativa.CooperativaDto;
 import br.com.solinftec.treinamentospringboot.dto.cooperativa.GetAllCooperativaDto;
 import br.com.solinftec.treinamentospringboot.dto.cooperativa.SaveCooperativaDto;
 import br.com.solinftec.treinamentospringboot.model.Cooperativa;
 import br.com.solinftec.treinamentospringboot.model.Fazendeiro;
 import br.com.solinftec.treinamentospringboot.repository.CooperativaRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CooperativaService {
-
     private final CooperativaRepository repository;
 
     public List<GetAllCooperativaDto> getAll() {
@@ -30,7 +33,7 @@ public class CooperativaService {
 
         Optional<Cooperativa> cooperativa = repository.findById(idCooperativa);
 
-        if(cooperativa.isPresent()) {
+        if (cooperativa.isPresent()) {
             return cooperativa.get().getFazendeiros();
         }
 
@@ -48,7 +51,7 @@ public class CooperativaService {
 
         Optional<Cooperativa> cooperativa = repository.findById(saveCooperativaDto.getId());
 
-        if(cooperativa.isPresent()) {
+        if (cooperativa.isPresent()) {
             repository.save(saveCooperativaDto.pegarModel());
             return saveCooperativaDto;
         } else {
@@ -60,10 +63,27 @@ public class CooperativaService {
 
         Optional<Cooperativa> cooperativa = repository.findById(idCooperativa);
 
-        if(cooperativa.isPresent()) {
+        if (cooperativa.isPresent()) {
             repository.delete(cooperativa.get());
         } else {
             throw new Exception("COOPERATIVA_NOT_FOUND");
         }
     }
+
+    public CooperativaDto getCooperativa(Long idCooperativa) throws Exception {
+
+        Optional<Cooperativa> cooperativa = repository.findById(idCooperativa);
+
+        if (cooperativa.isPresent()) {
+            return new CooperativaDto(cooperativa.get());
+        } else {
+            throw new Exception("COOPERATIVA_NOT_FOUND");
+        }
+    }
+
+    public Page<CooperativaDto> getPage(Pageable pageable, String search) {
+        Page<Cooperativa> page = repository.findAllPaged(pageable, search);
+        return page.map(cooperativa -> new CooperativaDto(cooperativa));
+    }
+
 }
